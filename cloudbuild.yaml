@@ -1,10 +1,6 @@
 steps:
-  - name: 'adoptopenjdk/openjdk8'
-    entrypoint: '/workspace/sbt'
-    args: ['docker:stage']
-
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'gcr.io/$PROJECT_ID/$REPO_NAME', '/workspace/target/docker/stage']
+    args: ['build', '-t', 'gcr.io/$PROJECT_ID/$REPO_NAME', '/workspace']
 
   - name: 'gcr.io/cloud-builders/docker'
     args: ['push', 'gcr.io/$PROJECT_ID/$REPO_NAME']

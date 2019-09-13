@@ -2,25 +2,28 @@ package controllers
 
 import javax.inject.{Inject, Singleton}
 import play.api.Logging
-import play.api.libs.json._
-import play.api.mvc.{InjectedController, WebSocket}
-import utils.InstanceUtil.InstanceInfo
-
-import scala.concurrent.Future
-import scala.concurrent.duration._
-import scala.jdk.CollectionConverters._
-import scala.util.Try
+import play.api.mvc.InjectedController
+import utils.InstanceUtil
+import utils.InstanceUtil.{Info, ProcessFailed}
 
 @Singleton
 class Application @Inject() extends InjectedController with Logging {
 
-  def index = Action(parse.json) { request =>
-
-    request.body.validate[InstanceInfo].fold({ errors =>
+  // todo: machinetype changes
+  def index = Action(parse.tolerantJson) { request =>
+    request.body.validate[Info].fold({ errors =>
       BadRequest(errors.toString())
     }, { instanceInfo =>
+      val createOrStart = InstanceUtil.describe(instanceInfo).fold({ case _: ProcessFailed =>
+        InstanceUtil.create(instanceInfo)
+      }, { _ =>
+        InstanceUtil.update(instanceInfo)
+      })
 
-      NotImplemented
+      createOrStart.fold({ t =>
+        logger.error(t.getMessage)
+        InternalServerError(t.getMessage)
+      }, Ok(_))
     })
   }
 
