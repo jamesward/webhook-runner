@@ -12,7 +12,7 @@ object InstanceUtil {
       val initialName = name.getOrElse(containerImage.replaceAll("[^0-9a-zA-Z]", "-").replaceAllLiterally("--", "-")).toLowerCase
 
       initialName.headOption.fold {
-        LazyList.continually(Random.shuffle(('a' to 'z').toList).head).take(16).mkString
+        LazyList.continually(Random.shuffle(('a' to 'z').toList).head).take(8).mkString
       } { first =>
         if (Character.isAlphabetic(first))
           initialName

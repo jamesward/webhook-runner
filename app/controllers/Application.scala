@@ -14,13 +14,14 @@ class Application @Inject() extends InjectedController with Logging {
     request.body.validate[Info].fold({ errors =>
       BadRequest(errors.toString())
     }, { instanceInfo =>
-      val createOrStart = InstanceUtil.describe(instanceInfo).fold({ case _: ProcessFailed =>
+      val createOrUpdate = InstanceUtil.describe(instanceInfo).fold({ case e: ProcessFailed =>
+        logger.info("Creating instance", e)
         InstanceUtil.create(instanceInfo)
       }, { _ =>
         InstanceUtil.update(instanceInfo)
       })
 
-      createOrStart.fold({ t =>
+      createOrUpdate.fold({ t =>
         logger.error(t.getMessage)
         InternalServerError(t.getMessage)
       }, Ok(_))

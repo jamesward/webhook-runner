@@ -37,6 +37,10 @@ class InstanceUtilSpec extends WordSpec with MustMatchers with BeforeAndAfterAll
       val operation = InstanceUtil.describe(instanceInfo)
       operation.get must include ("status: RUNNING")
     }
+    "fail when trying to describe an non-existent instance" in {
+      val operation = InstanceUtil.describe(instanceInfo.copy(name = Some(Random.alphanumeric.take(8).mkString)))
+      operation.isFailure must be (true)
+    }
     "be updatable" in {
       val operation = InstanceUtil.update(instanceInfo)
       operation.get must endWith ("done.")
