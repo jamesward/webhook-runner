@@ -5,8 +5,6 @@ COPY .  /app
 
 RUN ./sbt stage
 
-FROM gcr.io/cloud-builders/gcloud as gcloud
-
 FROM adoptopenjdk/openjdk8
 
 COPY --from=builder /app/target/universal/stage /app
