@@ -14,7 +14,7 @@ object InstanceUtil {
       initialName.headOption.fold {
         LazyList.continually(Random.shuffle(('a' to 'z').toList).head).take(8).mkString
       } { first =>
-        if (Character.isAlphabetic(first))
+        if (Character.isAlphabetic(first.toInt))
           initialName
         else
           "x-" + initialName
@@ -85,8 +85,13 @@ object InstanceUtil {
     case object Out extends Target
     case object Err extends Target
 
-    val processLogger = new ProcessLogger {
-      val lines = collection.mutable.Buffer[(String, Target)]()
+    trait AllLines {
+      def allLines: String
+    }
+
+    val processLogger = new ProcessLogger with AllLines {
+      private val lines = collection.mutable.Buffer[(String, Target)]()
+      def allLines: String = lines.map(_._1).mkString("\n")
 
       override def out(s: => String): Unit = lines.append(s -> Out)
       override def err(s: => String): Unit = lines.append(s -> Err)
@@ -97,9 +102,9 @@ object InstanceUtil {
 
     // todo: for now, do nothing with the output target
     if (result.exitValue() == 0)
-      Success(processLogger.lines.map(_._1).mkString("\n"))
+      Success(processLogger.allLines)
     else
-      Failure(ProcessFailed(cmd, processLogger.lines.map(_._1).mkString("\n")))
+      Failure(ProcessFailed(cmd, processLogger.allLines))
   }
 
   case class ProcessFailed(cmd: String, out: String) extends Exception {
