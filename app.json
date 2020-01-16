@@ -10,7 +10,7 @@
   "hooks": {
     "postcreate": {
       "commands": [
-        ".gcloud/service-account.sh"
+        ".gcloud/service-accounts.sh"
       ]
     }
   }

@@ -31,6 +31,9 @@ object InstanceUtil {
                  |--no-restart-on-failure
                  |--scopes=cloud-platform
                  |--container-image=${info.containerImage}
+                 |--container-stdin
+                 |--container-tty
+                 |--no-address
                  |--zone=${info.zone}
                  |--project=${info.project}
                  |""".stripMargin.replaceAllLiterally("\n", " ")

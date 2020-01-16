@@ -18,15 +18,10 @@ Sample `POST` to `/` request body:
 [![Run on Google Cloud](https://deploy.cloud.run/button.svg)](https://deploy.cloud.run)
 
 
-Use with Cloud Run & Cloud Scheduler
-1. Create a Service Account
-    1. TODO
-    1. Add Cloud Run Invoker Role
-1. Deploy this app on Cloud Run
-    1. TODO
-    1. Authenticated by service account created above
-1. Create a Cloud Scheduler job with the following options
-    - HTTP Endpoint of your Cloud Run app
-    - Payload of JSON like above
-    - Auth header of "OIDC Token"
-    - Service Account created above
+# TODO
+
+- Instance should shutdown after docker process exits
+- Docker logs don't seem to be coming through
+- Pass Env Vars (manually, from an existing resource, etc)
+- Other create options
+- Service Account for container?

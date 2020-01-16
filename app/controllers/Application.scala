@@ -9,7 +9,6 @@ import utils.InstanceUtil.{Info, ProcessFailed}
 @Singleton
 class Application @Inject() extends InjectedController with Logging {
 
-  // todo: machinetype changes
   def index = Action(parse.tolerantJson) { request =>
     request.body.validate[Info].fold({ errors =>
       BadRequest(errors.toString())
