@@ -65,7 +65,7 @@ declare endpoint=$(gcloud run services describe $service --platform=managed --re
 
 echo ""
 
-echo "If you'd like to run this contianer on a schedule, visit: "
+echo "If you'd like to run a container on a schedule, visit: "
 echo "https://console.cloud.google.com/cloudscheduler/jobs/new?project=$project"
 echo "Create a new job with these params:"
 echo "Target: HTTP"
