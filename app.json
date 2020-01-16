@@ -1,0 +1,17 @@
+{
+  "env": {
+    "APPLICATION_SECRET": {
+      "generator": "secret"
+    }
+  },
+  "options": {
+    "allow-unauthenticated": false
+  },
+  "hooks": {
+    "postcreate": {
+      "commands": [
+        ".gcloud/service-account.sh"
+      ]
+    }
+  }
+}
