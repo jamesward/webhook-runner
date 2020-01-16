@@ -17,14 +17,12 @@ gcloud iam service-accounts describe $invokersa --project $project &> /dev/null
 if [ $? -ne 0 ]; then
   echo "creating invoker service account: $invokersa"
   gcloud iam service-accounts create $invokersaname \
-    --description="$service invoker" \
     --display-name="$service invoker" \
     --project=$project
 fi
 
 echo "allowing $invokersa to call the $service service"
 gcloud run services add-iam-policy-binding $service \
-  --quiet \
   --region="$region" \
   --platform=managed \
   --member="serviceAccount:$invokersa" \
@@ -38,26 +36,25 @@ gcloud iam service-accounts describe $runnersa --project $project &> /dev/null
 if [ $? -ne 0 ]; then
   echo "creating runner service account: $runnersa"
   gcloud iam service-accounts create $runnersaname \
-    --description="$service runner" \
     --display-name="$service runner" \
     --project=$project
+
+  echo "gonna wait 30 seconds for stuff to happen"
+  sleep 30
 fi
 
 echo "allowing $runnersa to create a GCE instance"
 gcloud projects add-iam-policy-binding $project \
-  --quiet \
   --member=serviceAccount:$runnersa \
   --role=roles/compute.instanceAdmin &> /dev/null
 
 echo "allowing $runnersa to be a serviceAccountUser"
 gcloud projects add-iam-policy-binding $project \
-  --quiet \
   --member=serviceAccount:$runnersa \
   --role=roles/iam.serviceAccountUser &> /dev/null
 
 echo "updating $service to use the service account $runnersa"
 gcloud run services update $service \
-  --quiet \
   --platform=managed --project=$project --region=$region \
   --service-account=$runnersa &> /dev/null
 
