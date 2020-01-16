@@ -61,7 +61,7 @@ gcloud run services update $service \
   --platform=managed --project=$project --region=$region \
   --service-account=$runnersa &> /dev/null
 
-declare endpoint=$(gcloud run services describe $service --platform=managed --region=$region --format="value(status.address.url)")
+declare endpoint=$(gcloud run services describe $service --platform=managed --region=$region --project=$project --format="value(status.address.url)")
 
 echo ""
 
