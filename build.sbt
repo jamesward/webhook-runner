@@ -3,7 +3,7 @@ disablePlugins(PlayFilters)
 
 name := "webhook-runner"
 
-scalaVersion := "2.13.1"
+scalaVersion := "2.13.2"
 
 libraryDependencies ++= Seq(
   guice,

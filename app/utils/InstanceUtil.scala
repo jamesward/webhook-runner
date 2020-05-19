@@ -9,7 +9,7 @@ object InstanceUtil {
 
   case class Info(project: String, zone: String, machineType: String, containerImage: String, name: Option[String] =  None) {
     lazy val validName = {
-      val initialName = name.getOrElse(containerImage.replaceAll("[^0-9a-zA-Z]", "-").replaceAllLiterally("--", "-")).toLowerCase
+      val initialName = name.getOrElse(containerImage.replaceAll("[^0-9a-zA-Z]", "-").replace("--", "-")).toLowerCase
 
       initialName.headOption.fold {
         LazyList.continually(Random.shuffle(('a' to 'z').toList).head).take(8).mkString
@@ -36,7 +36,7 @@ object InstanceUtil {
                  |--no-address
                  |--zone=${info.zone}
                  |--project=${info.project}
-                 |""".stripMargin.replaceAllLiterally("\n", " ")
+                 |""".stripMargin.replace("\n", " ")
 
     run(cmd)
   }
@@ -47,7 +47,7 @@ object InstanceUtil {
                  |--quiet
                  |--zone=${info.zone}
                  |--project=${info.project}
-                 |""".stripMargin.replaceAllLiterally("\n", " ")
+                 |""".stripMargin.replace("\n", " ")
 
     run(cmd)
   }
@@ -57,7 +57,7 @@ object InstanceUtil {
                  |${info.validName}
                  |--zone=${info.zone}
                  |--project=${info.project}
-                 |""".stripMargin.replaceAllLiterally("\n", " ")
+                 |""".stripMargin.replace("\n", " ")
 
     run(cmd)
   }
@@ -68,7 +68,7 @@ object InstanceUtil {
                  |--container-image=${info.containerImage}
                  |--zone=${info.zone}
                  |--project=${info.project}
-                 |""".stripMargin.replaceAllLiterally("\n", " ")
+                 |""".stripMargin.replace("\n", " ")
 
     run(cmd)
   }
