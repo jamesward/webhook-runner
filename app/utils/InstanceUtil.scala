@@ -24,7 +24,7 @@ object InstanceUtil {
 
   implicit val infoReads = Json.reads[Info]
 
-  def create(info: Info): Try[String] = {
+  def create(info: Info, maybeServiceAccount: Option[String]): Try[String] = {
     val cmd = s"""gcloud beta compute instances create-with-container
                  |${info.validName}
                  |--container-restart-policy=never
@@ -38,10 +38,10 @@ object InstanceUtil {
                  |--project=${info.project}
                  |""".stripMargin.replace("\n", " ")
 
-    run(cmd)
+    run(cmd, maybeServiceAccount)
   }
 
-  def delete(info: Info): Try[String] = {
+  def delete(info: Info, maybeServiceAccount: Option[String]): Try[String] = {
     val cmd = s"""gcloud compute instances delete
                  |${info.validName}
                  |--quiet
@@ -49,20 +49,20 @@ object InstanceUtil {
                  |--project=${info.project}
                  |""".stripMargin.replace("\n", " ")
 
-    run(cmd)
+    run(cmd, maybeServiceAccount)
   }
 
-  def describe(info: Info): Try[String] = {
+  def describe(info: Info, maybeServiceAccount: Option[String]): Try[String] = {
     val cmd = s"""gcloud compute instances describe
                  |${info.validName}
                  |--zone=${info.zone}
                  |--project=${info.project}
                  |""".stripMargin.replace("\n", " ")
 
-    run(cmd)
+    run(cmd, maybeServiceAccount)
   }
 
-  def update(info: Info): Try[String] = {
+  def update(info: Info, maybeServiceAccount: Option[String]): Try[String] = {
     val cmd = s"""gcloud compute instances update-container
                  |${info.validName}
                  |--container-image=${info.containerImage}
@@ -70,20 +70,23 @@ object InstanceUtil {
                  |--project=${info.project}
                  |""".stripMargin.replace("\n", " ")
 
-    run(cmd)
+    run(cmd, maybeServiceAccount)
   }
 
-  def start(info: Info): Try[String] = {
+  def start(info: Info, maybeServiceAccount: Option[String]): Try[String] = {
     val cmd = s"""gcloud compute instances start
                  |${info.validName}
                  |--zone=${info.zone}
                  |--project=${info.project}
                  |""".stripMargin
 
-    run(cmd)
+    run(cmd, maybeServiceAccount)
   }
 
-  def run(cmd: String): Try[String] = {
+  def run(cmd: String, maybeServiceAccount: Option[String]): Try[String] = {
+
+    val cmdWithMaybeServiceAccount = maybeServiceAccount.fold(cmd)(cmd + " --impersonate-service-account=" + _)
+
     sealed class Target
     case object Out extends Target
     case object Err extends Target
@@ -101,13 +104,13 @@ object InstanceUtil {
       override def buffer[T](f: => T): T = f
     }
 
-    val result = cmd.run(processLogger)
+    val result = cmdWithMaybeServiceAccount.run(processLogger)
 
     // todo: for now, do nothing with the output target
     if (result.exitValue() == 0)
       Success(processLogger.allLines)
     else
-      Failure(ProcessFailed(cmd, processLogger.allLines))
+      Failure(ProcessFailed(cmdWithMaybeServiceAccount, processLogger.allLines))
   }
 
   case class ProcessFailed(cmd: String, out: String) extends Exception {

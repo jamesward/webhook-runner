@@ -10,14 +10,16 @@ import utils.InstanceUtil.{Info, ProcessFailed}
 class Application @Inject() extends InjectedController with Logging {
 
   def index = Action(parse.tolerantJson) { request =>
+    val maybeServiceAccount = request.headers.get("ServiceAccount")
+
     request.body.validate[Info].fold({ errors =>
       BadRequest(errors.toString())
     }, { instanceInfo =>
-      val createOrUpdate = InstanceUtil.describe(instanceInfo).fold({ case e: ProcessFailed =>
+      val createOrUpdate = InstanceUtil.describe(instanceInfo, maybeServiceAccount).fold({ case e: ProcessFailed =>
         logger.info("Creating instance", e)
-        InstanceUtil.create(instanceInfo)
+        InstanceUtil.create(instanceInfo, maybeServiceAccount)
       }, { _ =>
-        InstanceUtil.update(instanceInfo)
+        InstanceUtil.update(instanceInfo, maybeServiceAccount)
       })
 
       createOrUpdate.fold({ t =>

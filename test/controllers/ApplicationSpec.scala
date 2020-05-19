@@ -12,6 +12,8 @@ class ApplicationSpec extends PlaySpec with Results with GuiceOneAppPerSuite {
 
   val project = sys.env.getOrElse("PROJECT", throw new Exception("Must set PROJECT env var"))
 
+  val maybeServiceAccount = sys.env.get("SERVICE_ACCOUNT")
+
   implicit lazy val materializer: Materializer = app.materializer
 
   "index" must {
@@ -23,8 +25,10 @@ class ApplicationSpec extends PlaySpec with Results with GuiceOneAppPerSuite {
         "containerImage" -> "docker.io/hello-world",
       )
 
+
       val controller = app.injector.instanceOf[Application]
-      val request = FakeRequest(Helpers.POST, "/").withBody(json)
+      val headers = maybeServiceAccount.fold(Headers())(serviceAccount => Headers("ServiceAccount" -> serviceAccount))
+      val request = FakeRequest(Helpers.POST, "/").withBody(json).withHeaders(headers)
       val result = controller.index(request)
       status(result) mustEqual OK
     }
