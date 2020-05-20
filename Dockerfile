@@ -11,4 +11,4 @@ RUN apk --update add openjdk11-jre
 
 COPY --from=builder /app/target/universal/stage /app
 
-CMD ["/app/bin/webhook-runner", "-J-XshowSettings:vm", "-J-XX:MaxRAMFraction=1"]
+CMD ["/app/bin/webhook-runner", "-J-XshowSettings:vm"]
