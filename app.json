@@ -5,8 +5,7 @@
     }
   },
   "options": {
-    "allow-unauthenticated": false,
-    "memory": "512Mi"
+    "allow-unauthenticated": false
   },
   "hooks": {
     "postcreate": {
