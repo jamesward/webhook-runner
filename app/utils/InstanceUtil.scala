@@ -25,7 +25,7 @@ object InstanceUtil {
   implicit val infoReads = Json.reads[Info]
 
   def create(info: Info, maybeServiceAccount: Option[String]): Try[String] = {
-    val cmd = s"""gcloud beta compute instances create-with-container
+    val cmd = s"""gcloud compute instances create-with-container
                  |${info.validName}
                  |--container-restart-policy=never
                  |--no-restart-on-failure
@@ -85,7 +85,9 @@ object InstanceUtil {
 
   def run(cmd: String, maybeServiceAccount: Option[String]): Try[String] = {
 
-    val cmdWithMaybeServiceAccount = maybeServiceAccount.fold(cmd)(cmd + " --impersonate-service-account=" + _)
+    val cmdWithQuiet = cmd + " -q"
+
+    val cmdWithMaybeServiceAccount = maybeServiceAccount.fold(cmdWithQuiet)(cmdWithQuiet + " --impersonate-service-account=" + _)
 
     sealed class Target
     case object Out extends Target
@@ -104,6 +106,7 @@ object InstanceUtil {
       override def buffer[T](f: => T): T = f
     }
 
+    // todo: handle timeout (this can hang indefinitely waiting on stdin)
     val result = cmdWithMaybeServiceAccount.run(processLogger)
 
     // todo: for now, do nothing with the output target
