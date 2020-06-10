@@ -3,22 +3,17 @@ package controllers
 import java.io.File
 
 import javax.inject.{Inject, Singleton}
-import play.api.libs.Files.TemporaryFileCreator
 import play.api.mvc.InjectedController
 import play.api.{Environment, Logging}
 import utils.InstanceUtil
 import utils.InstanceUtil.{Info, ProcessFailed}
 
-import scala.sys.process._
-
 @Singleton
-class Application @Inject()(tmpFileCreatory: TemporaryFileCreator, env: Environment) extends InjectedController with Logging {
+class Application @Inject()(env: Environment) extends InjectedController with Logging {
 
   val maybeShutdownFile: Option[File] = {
     env.resource("scripts/shutdown-on-docker-exit.sh").map { url =>
-      val file = tmpFileCreatory.create()
-      (url #> file).!!
-      file
+      new File(url.toURI)
     }
   }
 
