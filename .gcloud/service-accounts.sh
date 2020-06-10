@@ -39,8 +39,8 @@ if [ $? -ne 0 ]; then
     --display-name="$service runner" \
     --project=$project
 
-#  echo "gonna wait 30 seconds for stuff to happen"
-#  sleep 30
+  echo "gonna wait 30 seconds for stuff to happen"
+  sleep 30
 fi
 
 echo "allowing $runnersa to create a GCE instance"
