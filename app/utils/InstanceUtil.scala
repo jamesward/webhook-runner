@@ -1,5 +1,7 @@
 package utils
 
+import java.io.File
+
 import play.api.libs.json.Json
 
 import sys.process._
@@ -24,8 +26,9 @@ object InstanceUtil {
 
   implicit val infoReads = Json.reads[Info]
 
-  def create(info: Info, maybeServiceAccount: Option[String]): Try[String] = {
-    val cmd = s"""gcloud compute instances create-with-container
+  def create(info: Info, maybeStartupFile: Option[File], maybeServiceAccount: Option[String]): Try[String] = {
+
+    val baseCmd = s"""gcloud compute instances create-with-container
                  |${info.validName}
                  |--container-restart-policy=never
                  |--no-restart-on-failure
@@ -37,6 +40,13 @@ object InstanceUtil {
                  |--zone=${info.zone}
                  |--project=${info.project}
                  |""".stripMargin.replace("\n", " ")
+
+    val cmd = maybeStartupFile.filter(_.exists).filter(_.isFile).fold(baseCmd) { file =>
+      baseCmd +
+        s"""
+          |--metadata-from-file=startup-script=${file.getAbsolutePath}
+          |""".stripMargin
+    }
 
     run(cmd, maybeServiceAccount)
   }

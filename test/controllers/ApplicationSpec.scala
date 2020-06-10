@@ -10,7 +10,7 @@ import play.api.test._
 
 class ApplicationSpec extends PlaySpec with Results with GuiceOneAppPerSuite {
 
-  val project = sys.env.getOrElse("PROJECT", throw new Exception("Must set PROJECT env var"))
+  val project = sys.env.getOrElse("PROJECT_ID", throw new Exception("Must set PROJECT_ID env var"))
 
   val maybeServiceAccount = sys.env.get("SERVICE_ACCOUNT")
 

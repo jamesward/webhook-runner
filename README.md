@@ -33,6 +33,13 @@ Sample `POST` to `/` request body:
 1. `export PROJECT_ID=YOUR_PROJECT_ID`
 1. `curl -X POST -H "Content-Type: application/json" -d "{\"project\":\"$PROJECT_ID\",\"zone\":\"us-central1-a\",\"machineType\":\"n1-standard-1\",\"containerImage\":\"docker.io/hello-world\"}" http://localhost:9000`
 
+# Test
+
+1. If needed, login to `gcloud`
+1. `export PROJECT_ID=YOUR_PROJECT_ID`
+1. (optional) `export SERVICE_ACCOUNT=YOUR_SERVICE_ACCOUNT`
+1. `./sbt test`
+
 # TODO
 
 - Instance should shutdown after docker process exits
