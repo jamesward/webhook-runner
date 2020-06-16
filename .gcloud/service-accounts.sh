@@ -9,7 +9,9 @@ declare region=$GOOGLE_CLOUD_REGION
 
 #gcloud services enable iam.googleapis.com
 
-declare invokersaname=$service-foo-invoker
+declare num=$(cat /dev/urandom|tr -dc '0-9'|fold -w 4|head -n 1)
+
+declare invokersaname=$service-invoker-$num
 declare invokersa=$invokersaname@$project.iam.gserviceaccount.com
 
 gcloud iam service-accounts describe $invokersa --project $project &> /dev/null
@@ -28,7 +30,7 @@ gcloud run services add-iam-policy-binding $service \
   --member="serviceAccount:$invokersa" \
   --role="roles/run.invoker" &> /dev/null
 
-declare runnersaname=$service-foo-runner
+declare runnersaname=$service-runner-$num
 declare runnersa=$runnersaname@$project.iam.gserviceaccount.com
 
 gcloud iam service-accounts describe $runnersa --project $project &> /dev/null
@@ -38,9 +40,6 @@ if [ $? -ne 0 ]; then
   gcloud iam service-accounts create $runnersaname \
     --display-name="$service runner" \
     --project=$project
-
-#  echo "gonna wait 30 seconds for stuff to happen"
-#  sleep 30
 fi
 
 echo "allowing $runnersa to create a GCE instance"
@@ -52,11 +51,6 @@ echo "allowing $runnersa to be a serviceAccountUser"
 gcloud projects add-iam-policy-binding $project \
   --member=serviceAccount:$runnersa \
   --role=roles/iam.serviceAccountUser &> /dev/null
-
-echo "trying to use role"
-gcloud compute instances list \
-    --project=$project \
-    --impersonate-service-account=$runnersa
 
 echo "updating $service to use the service account $runnersa"
 gcloud run services update $service \
