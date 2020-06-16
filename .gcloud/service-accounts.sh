@@ -39,8 +39,8 @@ if [ $? -ne 0 ]; then
     --display-name="$service runner" \
     --project=$project
 
-  echo "gonna wait 30 seconds for stuff to happen"
-  sleep 30
+#  echo "gonna wait 30 seconds for stuff to happen"
+#  sleep 30
 fi
 
 echo "allowing $runnersa to create a GCE instance"
@@ -52,6 +52,10 @@ echo "allowing $runnersa to be a serviceAccountUser"
 gcloud projects add-iam-policy-binding $project \
   --member=serviceAccount:$runnersa \
   --role=roles/iam.serviceAccountUser &> /dev/null
+
+echo "trying to use role"
+gcloud compute instances list \
+    --impersonate-service-account=$runnersa
 
 echo "updating $service to use the service account $runnersa"
 gcloud run services update $service \
