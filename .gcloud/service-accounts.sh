@@ -9,7 +9,7 @@ declare region=$GOOGLE_CLOUD_REGION
 
 #gcloud services enable iam.googleapis.com
 
-declare invokersaname=$service-invoker
+declare invokersaname=$service-foo-invoker
 declare invokersa=$invokersaname@$project.iam.gserviceaccount.com
 
 gcloud iam service-accounts describe $invokersa --project $project &> /dev/null
@@ -28,7 +28,7 @@ gcloud run services add-iam-policy-binding $service \
   --member="serviceAccount:$invokersa" \
   --role="roles/run.invoker" &> /dev/null
 
-declare runnersaname=$service-runner
+declare runnersaname=$service-foo-runner
 declare runnersa=$runnersaname@$project.iam.gserviceaccount.com
 
 gcloud iam service-accounts describe $runnersa --project $project &> /dev/null
