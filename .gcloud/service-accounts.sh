@@ -55,6 +55,7 @@ gcloud projects add-iam-policy-binding $project \
 
 echo "trying to use role"
 gcloud compute instances list \
+    --project=$project \
     --impersonate-service-account=$runnersa
 
 echo "updating $service to use the service account $runnersa"
