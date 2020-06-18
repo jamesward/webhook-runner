@@ -25,7 +25,8 @@ fi
 
 echo "allowing $invokersa to call the $service service"
 gcloud run services add-iam-policy-binding $service \
-  --region="$region" \
+  --project=$project \
+  --region=$region \
   --platform=managed \
   --member="serviceAccount:$invokersa" \
   --role="roles/run.invoker" &> /dev/null
