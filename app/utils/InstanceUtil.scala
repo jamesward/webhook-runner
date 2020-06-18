@@ -36,8 +36,6 @@ object InstanceUtil {
                  |--container-image=${info.containerImage}
                  |--container-stdin
                  |--container-tty
-                 |--no-address
-                 |--can-ip-forward
                  |--zone=${info.zone}
                  |--project=${info.project}
                  |""".stripMargin.replace("\n", " ")
