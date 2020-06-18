@@ -87,3 +87,7 @@ echo "curl -X POST -H \"Content-Type: application/json\" \\"
 echo "  -d '{\"project\":\"$project\",\"zone\":\"$region-a\",\"machineType\":\"n1-standard-1\",\"containerImage\":\"docker.io/hello-world\"}' \\"
 echo "  -H \"Authorization: Bearer \$(gcloud auth print-identity-token)\" \\"
 echo "  $endpoint"
+
+echo ""
+
+echo "View container logs: https://console.cloud.google.com/logs/viewer?project=$project&advancedFilter=(resource.type%3D%22gce_instance%22%20AND%20logName%3D%22projects%2F$project%2Flogs%2Fcos_containers%22)"
