@@ -14,14 +14,10 @@ declare num=$(cat /dev/urandom|tr -dc '0-9'|fold -w 4|head -n 1)
 declare invokersaname=$service-invoker-$num
 declare invokersa=$invokersaname@$project.iam.gserviceaccount.com
 
-gcloud iam service-accounts describe $invokersa --project $project &> /dev/null
-
-if [ $? -ne 0 ]; then
-  echo "creating invoker service account: $invokersa"
-  gcloud iam service-accounts create $invokersaname \
-    --display-name="$service invoker" \
-    --project=$project
-fi
+echo "creating invoker service account: $invokersa"
+gcloud iam service-accounts create $invokersaname \
+  --display-name="$service invoker" \
+  --project=$project
 
 echo "allowing $invokersa to call the $service service"
 gcloud run services add-iam-policy-binding $service \
@@ -34,14 +30,10 @@ gcloud run services add-iam-policy-binding $service \
 declare runnersaname=$service-runner-$num
 declare runnersa=$runnersaname@$project.iam.gserviceaccount.com
 
-gcloud iam service-accounts describe $runnersa --project $project &> /dev/null
-
-if [ $? -ne 0 ]; then
-  echo "creating runner service account: $runnersa"
-  gcloud iam service-accounts create $runnersaname \
-    --display-name="$service runner" \
-    --project=$project
-fi
+echo "creating runner service account: $runnersa"
+gcloud iam service-accounts create $runnersaname \
+  --display-name="$service runner" \
+  --project=$project
 
 echo "allowing $runnersa to create a GCE instance"
 gcloud projects add-iam-policy-binding $project \
@@ -90,4 +82,4 @@ echo "  $endpoint"
 
 echo ""
 
-echo "View container logs: https://console.cloud.google.com/logs/viewer?project=$project&advancedFilter=(resource.type%3D%22gce_instance%22%20AND%20logName%3D%22projects%2F$project%2Flogs%2Fcos_containers%22)"
+echo "View container logs:\nhttps://console.cloud.google.com/logs/viewer?project=$project&advancedFilter=(resource.type=\"gce_instance\" AND logName=\"projects/$project/logs/cos_containers\")"
