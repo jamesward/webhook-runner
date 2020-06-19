@@ -40,10 +40,6 @@ Sample `POST` to `/` request body:
 1. (optional) `export SERVICE_ACCOUNT=YOUR_SERVICE_ACCOUNT`
 1. `./sbt test`
 
-# Known Issues
-
-- When the container starts the logging agent probably isn't ready so startup logs are not sent to stackdriver
-
 # TODO
 
 - Pass Env Vars (manually, from an existing resource, etc)
