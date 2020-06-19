@@ -9,7 +9,7 @@ Sample `POST` to `/` request body:
   "project": "YOUR PROJECT",
   "zone": "us-central1-a",
   "machineType": "n1-standard-1",
-  "containerImage": "docker.io/hello-world",
+  "containerImage": "gcr.io/cr-demo-235923/hello-webhook-runner",
   "name": "OPTIONAL INSTANCE NAME"
 }
 ```
@@ -40,10 +40,12 @@ Sample `POST` to `/` request body:
 1. (optional) `export SERVICE_ACCOUNT=YOUR_SERVICE_ACCOUNT`
 1. `./sbt test`
 
+# Known Issues
+
+- When the container starts the logging agent probably isn't ready so startup logs are not sent to stackdriver
+
 # TODO
 
-- Instance should shutdown after docker process exits
-- Docker logs don't seem to be coming through
 - Pass Env Vars (manually, from an existing resource, etc)
 - Other create options
 - Service Account for container?
